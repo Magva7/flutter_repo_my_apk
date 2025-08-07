@@ -1,10 +1,10 @@
-name: Flutter Build APK
+name: Flutter Android Build
 
 on:
   push:
     branches:
       - main
-  pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -14,23 +14,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Flutter
+      - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.1' # или ваша версия
+          flutter-version: '3.22.1'
+          channel: 'stable'
+          cache: true
 
-      - name: Get dependencies
-        run: |
-          cd my_new_app
-          flutter pub get
+      - name: Flutter pub get
+        run: flutter pub get
 
       - name: Build APK
-        run: |
-          cd my_new_app
-          flutter build apk --release
+        run: flutter build apk --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-release
-          path: my_new_app/build/app/outputs/flutter-apk/app-release.apk
+          name: app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
