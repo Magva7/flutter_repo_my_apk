@@ -1,26 +1,36 @@
-name: Flutter APK CI
+name: Flutter Build APK
 
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: subosito/flutter-action@v2
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.1'  # Вы можете обновить до последней
+          flutter-version: '3.22.1' # или ваша версия
 
-      - run: flutter pub get
-      - run: flutter build apk --release
+      - name: Get dependencies
+        run: |
+          cd my_new_app
+          flutter pub get
 
-      - name: Upload artifact
+      - name: Build APK
+        run: |
+          cd my_new_app
+          flutter build apk --release
+
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: app-release
+          path: my_new_app/build/app/outputs/flutter-apk/app-release.apk
